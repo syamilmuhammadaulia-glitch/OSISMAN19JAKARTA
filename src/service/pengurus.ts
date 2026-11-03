@@ -7,7 +7,8 @@ const pengurusCollection = collection(db, "pengurus");
 // Fungsi untuk mengambil semua data pengurus
 export async function getPengurus() {
   const snapshot = await getDocs(pengurusCollection);
-  return snapshot.docs.map((doc) => ({
+  // Tambahkan : any pada parameter doc di bawah ini
+  return snapshot.docs.map((doc: any) => ({
     id: doc.id,
     ...doc.data(),
   }));
