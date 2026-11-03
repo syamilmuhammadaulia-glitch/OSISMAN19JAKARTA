@@ -1,112 +1,21 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Users, Search, Award, Shield, UserCheck, Sparkles } from "lucide-react";
-
-interface Member {
-  nama: string;
-  jabatan: string;
-  kelas: string;
-  bidang: string;
-}
-
-const pengurusIntiList: Member[] = [
-  { nama: "Rizky Wahyu Satrio, S.Si., M.Pd.", jabatan: "Pembina OSIS", kelas: "Tenaga Pendidik", bidang: "Pengurus Inti" },
-  { nama: "Muhammad Salman Al Farisi", jabatan: "Ketua OSIS", kelas: "XI-G", bidang: "Pengurus Inti" },
-  { nama: "Najlah Salsabilah", jabatan: "Wakil Ketua OSIS", kelas: "XI-E", bidang: "Pengurus Inti" },
-  { nama: "Haykal Arsyad Ramadhan", jabatan: "Sekretaris 1", kelas: "XI-A", bidang: "Pengurus Inti" },
-  { nama: "Zahra Aurelia Fatah", jabatan: "Sekretaris 2", kelas: "XI-A", bidang: "Pengurus Inti" },
-  { nama: "Elisa Kansa Salsabila", jabatan: "Bendahara 1", kelas: "XI-A", bidang: "Pengurus Inti" },
-  { nama: "Muhammad Hafiz Ramadhan", jabatan: "Bendahara 2", kelas: "XI-D", bidang: "Pengurus Inti" },
-];
-
-const seksiBidangList = [
-  {
-    namaSekbid: "Kewarganegaraan",
-    deskripsi: "Menegakkan jiwa nasionalisme, upacara bendera, dan wawasan kebangsaan siswa.",
-    anggota: [
-      { nama: "Jingga Angraeni Safitri", jabatan: "Koordinator", kelas: "XI-H" },
-      { nama: "Ahza Nasyitha Abidin", jabatan: "Anggota", kelas: "XI-F" },
-      { nama: "Syamil Muhammad Aulia", jabatan: "Anggota", kelas: "X-B" },
-      { nama: "Gita Ramadhani", jabatan: "Anggota", kelas: "X-C" },
-      { nama: "Kireina Anjani", jabatan: "Anggota", kelas: "X-D" },
-      { nama: "Muhammad Fathur Rahman Shiddiq", jabatan: "Anggota", kelas: "X-H" },
-    ],
-  },
-  {
-    namaSekbid: "Olahraga & Seni (ORSEN)",
-    deskripsi: "Mengembangkan potensi bakat, kompetisi olahraga antarkelas, dan apresiasi seni budaya.",
-    anggota: [
-      { nama: "Nikko Adinata Ruliff", jabatan: "Koordinator", kelas: "XI-F" },
-      { nama: "Atika Nainawah", jabatan: "Anggota", kelas: "XI-B" },
-      { nama: "Balqis Amira Rahmah", jabatan: "Anggota", kelas: "XI-F" },
-      { nama: "Andika Rasyad Putra Juliansyah", jabatan: "Anggota", kelas: "X-A" },
-      { nama: "Kinar Gendhis Dhanasthri", jabatan: "Anggota", kelas: "X-D" },
-      { nama: "Muhammad Raakha Mulia", jabatan: "Anggota", kelas: "X-D" },
-      { nama: "Khalisha Syabella Widjaya", jabatan: "Anggota", kelas: "X-F" },
-    ],
-  },
-  {
-    namaSekbid: "Kewirausahaan",
-    deskripsi: "Mengasah jiwa kemandirian finansial siswa melalui unit usaha dan bazar sekolah.",
-    anggota: [
-      { nama: "Iffah Izzatunnissa Baharuddin", jabatan: "Koordinator", kelas: "XI-D" },
-      { nama: "Sabih Sulthani Adlan", jabatan: "Anggota", kelas: "XI-B" },
-      { nama: "Nayfa Azizah", jabatan: "Anggota", kelas: "X-A" },
-      { nama: "Latisya Nurramadhani", jabatan: "Anggota", kelas: "X-B" },
-      { nama: "Naomi Yasashii Fawaz", jabatan: "Anggota", kelas: "X-F" },
-      { nama: "Rafisqi Gavin Atha Pramana", jabatan: "Anggota", kelas: "X-G" },
-    ],
-  },
-  {
-    namaSekbid: "Keagamaan",
-    deskripsi: "Membangun iklim madrasah yang religius melalui ibadah berjamaah dan peringatan hari besar Islam.",
-    anggota: [
-      { nama: "Naura Afzhyanisa", jabatan: "Koordinator", kelas: "XI-D" },
-      { nama: "Sultan Oktasio Putra", jabatan: "Anggota", kelas: "XI-D" },
-      { nama: "Khansaa Azzahra Ardiansyah", jabatan: "Anggota", kelas: "X-B" },
-      { nama: "Rifqi Umar Jamaludin", jabatan: "Anggota", kelas: "X-C" },
-      { nama: "Azkiah Kayla Sya'ra", jabatan: "Anggota", kelas: "X-E" },
-      { nama: "Syafira Yudian Pradita", jabatan: "Anggota", kelas: "X-E" },
-      { nama: "Zabri Ardiansyah", jabatan: "Anggota", kelas: "X-H" },
-    ],
-  },
-  {
-    namaSekbid: "HPDD",
-    deskripsi: "Humas, Publikasi, Desain & Dokumentasi kegiatan dan citra digital OSIS MAN 19.",
-    anggota: [
-      { nama: "Haura Azka Syahrani", jabatan: "Koordinator", kelas: "XI-E" },
-      { nama: "Aurel Ananda Fey", jabatan: "Anggota", kelas: "XI-F" },
-      { nama: "Rameyza Dylana Dyawigya", jabatan: "Anggota", kelas: "XI-F" },
-      { nama: "Haikal Raffasya Putra", jabatan: "Anggota", kelas: "X-B" },
-      { nama: "Mutiara Salsabila Putri Dewi", jabatan: "Anggota", kelas: "X-D" },
-      { nama: "Firaz Atharauf Harish", jabatan: "Anggota", kelas: "X-G" },
-    ],
-  },
-  {
-    namaSekbid: "Kedisiplinan & Pengembangan SDM (KPS)",
-    deskripsi: "Menegakkan ketertiban tata tertib siswa serta upgrading kompetensi kepemimpinan.",
-    anggota: [
-      { nama: "Syafira Wahidah Ramadhani", jabatan: "Koordinator", kelas: "XI-G" },
-      { nama: "Adinda Fauzia Zahrani", jabatan: "Anggota", kelas: "XI-G" },
-      { nama: "Danish Saputra Arifiansyah", jabatan: "Anggota", kelas: "XI-G" },
-      { nama: "Nasyfa Qurrotu'aini Al-Adi", jabatan: "Anggota", kelas: "X-B" },
-      { nama: "Muhammad Alfrazi Wijaya", jabatan: "Anggota", kelas: "X-D" },
-      { nama: "Besty Okta Catelya", jabatan: "Anggota", kelas: "X-E" },
-    ],
-  },
-];
+import { Users, Search, Award, Shield } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
 // Helper to generate initials from full name
 function getInitials(name: string) {
+  if (!name) return "OS";
   const clean = name.replace(/,\s*[A-Za-z.,]+/g, "").trim();
   const parts = clean.split(" ").filter(Boolean);
+  if (parts.length === 0) return "OS";
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
 // Helper to determine role styling
-function getRoleBadge(jabatan: string) {
+function getRoleBadge(jabatan: string = "") {
   const j = jabatan.toLowerCase();
   if (j.includes("pembina") || j.includes("ketua")) {
     return {
@@ -137,31 +46,32 @@ function getRoleBadge(jabatan: string) {
 }
 
 export default function StrukturPengurus() {
+  const { data } = useContent();
+  const struktur = data.struktur;
+  const pengurusIntiList = useMemo(() => struktur.pengurusInti || [], [struktur.pengurusInti]);
+  const seksiBidangList = useMemo(() => struktur.seksiBidang || [], [struktur.seksiBidang]);
+
   const [activeTab, setActiveTab] = useState<string>("Semua");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const categories = [
-    "Semua",
-    "Pengurus Inti",
-    "Kewarganegaraan",
-    "Olahraga & Seni (ORSEN)",
-    "Kewirausahaan",
-    "Keagamaan",
-    "HPDD",
-    "Kedisiplinan & Pengembangan SDM (KPS)",
-  ];
+  const categories = useMemo(() => {
+    return [
+      "Semua",
+      "Pengurus Inti",
+      ...seksiBidangList.map((s) => s.namaSekbid),
+    ];
+  }, [seksiBidangList]);
 
   // Filter logic
   const filteredData = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
 
-    const matchQuery = (item: { nama: string; jabatan: string; kelas: string }) => {
+    const matchQuery = (item: { nama?: string; jabatan?: string; kelas?: string }) => {
       if (!q) return true;
-      return (
-        item.nama.toLowerCase().includes(q) ||
-        item.jabatan.toLowerCase().includes(q) ||
-        item.kelas.toLowerCase().includes(q)
-      );
+      const n = (item.nama || "").toLowerCase();
+      const j = (item.jabatan || "").toLowerCase();
+      const k = (item.kelas || "").toLowerCase();
+      return n.includes(q) || j.includes(q) || k.includes(q);
     };
 
     const showInti =
@@ -172,7 +82,7 @@ export default function StrukturPengurus() {
       .filter((s) => activeTab === "Semua" || activeTab === s.namaSekbid)
       .map((s) => ({
         ...s,
-        anggota: s.anggota.filter(matchQuery),
+        anggota: (s.anggota || []).filter(matchQuery),
       }))
       .filter((s) => s.anggota.length > 0);
 
@@ -181,7 +91,11 @@ export default function StrukturPengurus() {
       intiMembers: pengurusIntiList.filter(matchQuery),
       sekbidList: filteredSekbid,
     };
-  }, [activeTab, searchQuery]);
+  }, [activeTab, searchQuery, pengurusIntiList, seksiBidangList]);
+
+  const totalPengurus =
+    pengurusIntiList.length +
+    seksiBidangList.reduce((acc, s) => acc + (s.anggota?.length || 0), 0);
 
   return (
     <section id="struktur" className="space-y-10 scroll-mt-24">
@@ -190,14 +104,14 @@ export default function StrukturPengurus() {
         <div>
           <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-blue-700 mb-2">
             <Users className="w-3.5 h-3.5" />
-            <span>Struktur Organisasi</span>
+            <span>{struktur.sectionLabel}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Susunan Pengurus OSIS
+            {struktur.sectionTitle}
           </h2>
         </div>
         <p className="text-sm text-slate-500 max-w-md">
-          Sebanyak 44 pengurus terpilih masa bakti 2026/2027 yang mengemban amanah di bawah bimbingan pembina dan dewan guru.
+          {struktur.sectionDesc || `Sebanyak ${totalPengurus} pengurus terpilih yang mengemban amanah di bawah bimbingan pembina.`}
         </p>
       </div>
 
@@ -256,11 +170,11 @@ export default function StrukturPengurus() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredData.intiMembers.map((member, idx) => {
+              {filteredData.intiMembers.map((member) => {
                 const styling = getRoleBadge(member.jabatan);
                 return (
                   <div
-                    key={idx}
+                    key={member.id || member.nama}
                     className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all duration-200 flex flex-col items-center text-center justify-between group"
                   >
                     <div className="flex flex-col items-center">
@@ -294,8 +208,8 @@ export default function StrukturPengurus() {
         )}
 
         {/* 2. Seksi Bidang Sections */}
-        {filteredData.sekbidList.map((sekbid, index) => (
-          <div key={index} className="space-y-5">
+        {filteredData.sekbidList.map((sekbid) => (
+          <div key={sekbid.id || sekbid.namaSekbid} className="space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
@@ -314,11 +228,11 @@ export default function StrukturPengurus() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-              {sekbid.anggota.map((anggota, idx) => {
+              {sekbid.anggota.map((anggota) => {
                 const styling = getRoleBadge(anggota.jabatan);
                 return (
                   <div
-                    key={idx}
+                    key={anggota.id || anggota.nama}
                     className="p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all duration-200 flex flex-col items-center text-center justify-between group"
                   >
                     <div className="flex flex-col items-center w-full">
@@ -365,4 +279,3 @@ export default function StrukturPengurus() {
     </section>
   );
 }
-

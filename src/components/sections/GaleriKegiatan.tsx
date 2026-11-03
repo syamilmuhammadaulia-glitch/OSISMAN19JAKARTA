@@ -1,46 +1,35 @@
+"use client";
+
 import {
-  Image as ImageIcon,
   FolderOpen,
   ExternalLink,
-  Sparkles,
   Camera,
   Film,
   Calendar,
   Layers,
 } from "lucide-react";
-
-const eventCategories = [
-  {
-    title: "Peringatan Hari Besar & Keagamaan",
-    desc: "Isra Miraj, Maulid Nabi, Gema Ramadhan, Hari Guru Nasional, dan Upacara 17 Agustus.",
-    tags: ["Keagamaan", "Nasional"],
-    count: "Arsip Rutin",
-    icon: Calendar,
-  },
-  {
-    title: "Kaderisasi & Kepemimpinan Siswa",
-    desc: "Latihan Dasar Kepemimpinan Siswa (LDKS Matamuda), Upgrading Pengurus, & Workshop.",
-    tags: ["KPS", "Leadership"],
-    count: "Tahunan",
-    icon: Layers,
-  },
-  {
-    title: "Pekan Olahraga, Seni & Literasi",
-    desc: "Classmeeting Semester, Bulan Bahasa, Pentas Seni, dan Turnamen E-Sport antarkelas.",
-    tags: ["ORSEN", "Kompetisi"],
-    count: "Semesteran",
-    icon: Film,
-  },
-  {
-    title: "Sosial, Wirausaha & Publikasi",
-    desc: "Bazar Wiraman19, Bank Sampah, Aftermovie dokumentasi, dan bakti sosial.",
-    tags: ["Wirausaha", "HPDD"],
-    count: "Berkala",
-    icon: Camera,
-  },
-];
+import { useContent } from "@/context/ContentContext";
+import DriveCard from "@/components/DriveCard";
 
 export default function GaleriKegiatan() {
+  const { data } = useContent();
+  const galeri = data.galeri;
+  const categories = galeri.categories || [];
+  const driveCards = galeri.driveCards || [];
+
+  const getIcon = (type?: string) => {
+    switch (type) {
+      case "calendar":
+        return Calendar;
+      case "layers":
+        return Layers;
+      case "film":
+        return Film;
+      default:
+        return Camera;
+    }
+  };
+
   return (
     <section id="galeri" className="space-y-10 scroll-mt-24">
       {/* Section Header */}
@@ -48,24 +37,24 @@ export default function GaleriKegiatan() {
         <div>
           <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-blue-700 mb-2">
             <Camera className="w-3.5 h-3.5" />
-            <span>Dokumentasi &amp; Publikasi</span>
+            <span>{galeri.sectionLabel}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Galeri &amp; Arsip Kegiatan
+            {galeri.sectionTitle}
           </h2>
         </div>
         <p className="text-sm text-slate-500 max-w-md">
-          Dokumentasi foto, rekaman video, dan aftermovie setiap agenda kegiatan OSIS MAN 19 Jakarta yang diarsipkan secara terpusat.
+          {galeri.sectionDesc}
         </p>
       </div>
 
       {/* Grid Kategori Dokumentasi */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {eventCategories.map((cat, idx) => {
-          const Icon = cat.icon;
+        {categories.map((cat, idx) => {
+          const Icon = getIcon(cat.iconType);
           return (
             <div
-              key={idx}
+              key={cat.id || idx}
               className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all duration-200 flex flex-col justify-between group"
             >
               <div className="space-y-3">
@@ -86,7 +75,7 @@ export default function GaleriKegiatan() {
               </div>
 
               <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-1.5">
-                {cat.tags.map((tag, tIdx) => (
+                {(cat.tags || []).map((tag, tIdx) => (
                   <span
                     key={tIdx}
                     className="text-[10px] font-semibold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100"
@@ -108,30 +97,49 @@ export default function GaleriKegiatan() {
           <div className="space-y-2 max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-bold uppercase tracking-wider">
               <FolderOpen className="w-3.5 h-3.5" />
-              <span>Pusat Penyimpanan Aset Digital</span>
+              <span>{galeri.driveBadge}</span>
             </div>
             <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-              Akses Folder Dokumentasi Google Drive Resmi
+              {galeri.driveTitle}
             </h3>
             <p className="text-sm text-slate-300 leading-relaxed">
-              Seluruh foto resolusi tinggi, aset publikasi, materi presentasi, dan aftermovie acara tersimpan secara terstruktur di Google Drive OSIS MAN 19 Jakarta. Dikelola dan diperbarui secara berkala oleh tim HPDD.
+              {galeri.driveDesc}
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
             <a
-              href="https://drive.google.com"
+              href={galeri.driveButtonHref}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-lg shadow-blue-950/40 hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
             >
-              <span>Buka Google Drive OSIS</span>
+              <span>{galeri.driveButtonText}</span>
               <ExternalLink className="w-4 h-4" />
             </a>
           </div>
         </div>
       </div>
+
+      {/* Drive Archive Cards */}
+      {driveCards.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-base font-bold text-slate-900">
+            Arsip Folder Dokumentasi Per Kegiatan
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {driveCards.map((card) => (
+              <DriveCard
+                key={card.id}
+                title={card.title}
+                date={card.date}
+                driveLink={card.driveLink}
+                category={card.category}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
-

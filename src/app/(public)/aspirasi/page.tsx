@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Bell,
@@ -13,126 +15,86 @@ import {
   HelpCircle,
   ExternalLink,
 } from "lucide-react";
-
-export const metadata = {
-  title: "Kotak Aspirasi - OSIS MAN 19 Jakarta",
-  description:
-    "Saluran resmi aspirasi, kritik saran, dan ide kegiatan bagi siswa dan guru MAN 19 Jakarta.",
-};
-
-const aspirasiCards = [
-  {
-    id: "siswa",
-    title: "ASPIRASI SISWA SISWI",
-    description: "Wadah suara bagi seluruh siswa MAN 19 Jakarta.",
-    href: "https://forms.gle/GyT6FnVGEoFS2AnX7",
-    icon: Users,
-    iconWrapper: "bg-blue-50 text-blue-500 border-blue-100",
-    badgeLabel: "Siswa & Siswi",
-    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
-  },
-  {
-    id: "guru",
-    title: "ASPIRASI KHUSUS GURU",
-    description: "Masukan dan saran dari Bapak/Ibu Guru untuk OSIS.",
-    href: "https://forms.gle/ERA5FWPBJzVCQvnH7",
-    icon: GraduationCap,
-    iconWrapper: "bg-emerald-50 text-emerald-500 border-emerald-100",
-    badgeLabel: "Dewan Guru",
-    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  },
-  {
-    id: "kritik-saran",
-    title: "KRITIK/SARAN UNTUK OSIS",
-    description: "Evaluasi kinerja pengurus BEST OSIS agar lebih baik.",
-    href: "https://forms.gle/77VDQSqMk75pDRvx6",
-    icon: MessageSquare,
-    iconWrapper: "bg-rose-50 text-rose-500 border-rose-100",
-    badgeLabel: "Evaluasi & Saran",
-    badgeColor: "bg-rose-50 text-rose-700 border-rose-200",
-  },
-  {
-    id: "ide-kegiatan",
-    title: "MASUKAN IDE KEGIATAN",
-    description: "Punya ide acara seru? Sampaikan idemu di sini!",
-    href: "https://forms.gle/C5qe5q9xdLGo3wJ3A",
-    icon: Lightbulb,
-    iconWrapper: "bg-amber-50 text-amber-500 border-amber-100",
-    badgeLabel: "Inovasi Acara",
-    badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
-  },
-];
-
-const alurAspirasi = [
-  {
-    step: "01",
-    title: "Pilih Formulir",
-    desc: "Tentukan jenis formulir yang sesuai dengan pesan yang ingin disampaikan.",
-  },
-  {
-    step: "02",
-    title: "Tuliskan Masukan",
-    desc: "Isi formulir secara jujur dan konstruktif. Dapat dilakukan secara anonim.",
-  },
-  {
-    step: "03",
-    title: "Rapat Koordinasi",
-    desc: "Aspirasi dibahas dalam rapat bulanan BEST OSIS bersama pembina.",
-  },
-  {
-    step: "04",
-    title: "Realisasi Program",
-    desc: "Saran dan ide terpilih diwujudkan ke dalam program kerja nyata.",
-  },
-];
+import { useContent } from "@/context/ContentContext";
 
 export default function AspirasiPage() {
+  const { data } = useContent();
+  const { aspirasiPage } = data;
+
+  const getCardIcon = (iconType?: string) => {
+    switch (iconType) {
+      case "users":
+        return {
+          icon: Users,
+          iconWrapper: "bg-blue-50 text-blue-500 border-blue-100",
+          badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+        };
+      case "graduation":
+        return {
+          icon: GraduationCap,
+          iconWrapper: "bg-emerald-50 text-emerald-500 border-emerald-100",
+          badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+        };
+      case "message":
+        return {
+          icon: MessageSquare,
+          iconWrapper: "bg-rose-50 text-rose-500 border-rose-100",
+          badgeColor: "bg-rose-50 text-rose-700 border-rose-200",
+        };
+      case "lightbulb":
+      default:
+        return {
+          icon: Lightbulb,
+          iconWrapper: "bg-amber-50 text-amber-500 border-amber-100",
+          badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
+        };
+    }
+  };
+
   return (
     <div className="pt-24 sm:pt-28 pb-20 space-y-12">
       {/* 1. Header Section */}
       <section className="text-center max-w-3xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/90 text-blue-800 text-xs font-bold uppercase tracking-wider">
           <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-          <span>Suara Civitas Akademika MAN 19</span>
+          <span>{aspirasiPage.badgeText}</span>
         </div>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-          Kotak Aspirasi <span className="text-blue-700">OSIS MAN 19</span>
+          {aspirasiPage.pageTitle}{" "}
+          <span className="text-blue-700">{aspirasiPage.pageHighlight}</span>
         </h1>
         <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
-          Sampaikan masukan, kritik membangun, atau ide kegiatan kreatif demi
-          kemajuan bersama civitas akademika MAN 19 Jakarta.
+          {aspirasiPage.pageDesc}
         </p>
       </section>
 
       {/* 2. Banner Pemberitahuan Penting */}
       <section className="max-w-4xl mx-auto">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 to-indigo-900 text-white shadow-md shadow-blue-700/20 p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-6 border border-blue-600/40">
-          {/* Subtle Glow Accent */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Left Icon: Notification Bell inside a rounded squircle */}
           <div className="relative flex-shrink-0 w-13 h-13 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-inner">
             <Bell className="w-6 h-6 text-white" />
           </div>
 
-          {/* Right Text Content */}
           <div className="relative flex-1 space-y-1">
             <h2 className="text-xs sm:text-sm font-extrabold tracking-wider uppercase text-white/95">
               PEMBERITAHUAN PENTING
             </h2>
             <p className="text-sm text-blue-50 font-normal leading-relaxed">
               Kotak aspirasi periode semester berjalan telah dibuka. Semua masukan
-              akan dibahas secara berkala dalam rapat koordinasi BEST OSIS bersama dewan guru dan pembina.
+              akan dibahas secara berkala dalam rapat koordinasi pengurus bersama dewan guru dan pembina.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 3. Grid 4 Kartu Formulir Aspirasi */}
+      {/* 3. Grid Kartu Formulir Aspirasi */}
       <section className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-          {aspirasiCards.map((card) => {
-            const Icon = card.icon;
+          {(aspirasiPage.cards || []).map((card) => {
+            const config = getCardIcon(card.iconType);
+            const Icon = config.icon;
             return (
               <a
                 key={card.id}
@@ -142,21 +104,19 @@ export default function AspirasiPage() {
                 className="group relative flex flex-col justify-between p-7 sm:p-8 bg-white rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-lg hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
               >
                 <div>
-                  {/* Top: Icon Badge & Category Tag */}
                   <div className="flex items-center justify-between mb-5">
                     <div
-                      className={`w-13 h-13 rounded-2xl flex items-center justify-center border ${card.iconWrapper} transition-transform duration-300 group-hover:scale-105`}
+                      className={`w-13 h-13 rounded-2xl flex items-center justify-center border ${config.iconWrapper} transition-transform duration-300 group-hover:scale-105`}
                     >
                       <Icon className="w-6 h-6" strokeWidth={2.2} />
                     </div>
                     <span
-                      className={`text-xs font-bold px-3 py-1 rounded-full border ${card.badgeColor}`}
+                      className={`text-xs font-bold px-3 py-1 rounded-full border ${config.badgeColor}`}
                     >
                       {card.badgeLabel}
                     </span>
                   </div>
 
-                  {/* Heading & Subtitle */}
                   <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight uppercase group-hover:text-blue-700 transition-colors">
                     {card.title}
                   </h2>
@@ -165,7 +125,6 @@ export default function AspirasiPage() {
                   </p>
                 </div>
 
-                {/* Bottom CTA Link */}
                 <div className="mt-7 pt-4 border-t border-slate-100 flex items-center justify-between">
                   <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold tracking-wider text-blue-700 uppercase group-hover:text-blue-800 transition-colors">
                     Buka Google Form
@@ -209,15 +168,15 @@ export default function AspirasiPage() {
       <section className="max-w-5xl mx-auto pt-4">
         <div className="text-center mb-8 space-y-2">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Bagaimana Suara Anda Diproses?
+            {aspirasiPage.alurTitle}
           </h2>
           <p className="text-sm text-slate-500 max-w-lg mx-auto">
-            Komitmen transparansi pengurus BEST OSIS dalam menindaklanjuti setiap aspirasi.
+            {aspirasiPage.alurDesc}
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {alurAspirasi.map((item, index) => (
+          {(aspirasiPage.alurList || []).map((item, index) => (
             <div
               key={index}
               className="p-6 bg-white rounded-2xl border border-slate-200/90 shadow-2xs relative flex flex-col justify-between hover:border-blue-300 transition-colors"
@@ -251,7 +210,7 @@ export default function AspirasiPage() {
               Ingin berdiskusi langsung dengan pengurus?
             </h3>
             <p className="text-sm text-slate-600">
-              Kunjungi ruang sekretariat OSIS MAN 19 Jakarta pada jam istirahat sekolah.
+              Kunjungi ruang sekretariat pada jam istirahat sekolah atau hubungi kontak resmi kami.
             </p>
           </div>
           <Link
@@ -265,4 +224,3 @@ export default function AspirasiPage() {
     </div>
   );
 }
-

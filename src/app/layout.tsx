@@ -1,5 +1,7 @@
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { ContentProvider } from "@/context/ContentContext";
+import AdminHashListener from "@/components/AdminHashListener";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -29,9 +31,11 @@ export default function RootLayout({
   return (
     <html lang="id" className={`scroll-smooth ${plusJakartaSans.variable}`}>
       <body className="font-sans antialiased text-slate-800 bg-slate-50 min-h-screen">
-        {children}
+        <ContentProvider>
+          <AdminHashListener />
+          {children}
+        </ContentProvider>
       </body>
     </html>
   );
 }
-

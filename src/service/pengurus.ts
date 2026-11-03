@@ -1,21 +1,29 @@
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc, DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { db } from "../lib/firebase/config";
 
 // Mengarah ke tabel (koleksi) "pengurus" di Firestore
 const pengurusCollection = collection(db, "pengurus");
 
+export interface PengurusDoc {
+  id?: string;
+  nama: string;
+  jabatan: string;
+  kelas: string;
+  bidang: string;
+  createdAt?: string;
+}
+
 // Fungsi untuk mengambil semua data pengurus
-export async function getPengurus() {
+export async function getPengurus(): Promise<PengurusDoc[]> {
   const snapshot = await getDocs(pengurusCollection);
-  // Tambahkan : any pada parameter doc di bawah ini
-  return snapshot.docs.map((doc: any) => ({
+  return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
     id: doc.id,
-    ...doc.data(),
+    ...(doc.data() as Omit<PengurusDoc, "id">),
   }));
 }
 
 // Fungsi untuk menambah data pengurus baru
-export async function addPengurus(data: any) {
+export async function addPengurus(data: Omit<PengurusDoc, "id">): Promise<string> {
   try {
     const docRef = await addDoc(pengurusCollection, {
       ...data,

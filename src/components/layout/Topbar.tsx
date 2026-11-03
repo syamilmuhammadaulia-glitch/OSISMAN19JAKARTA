@@ -4,19 +4,14 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Sparkles, ChevronRight } from "lucide-react";
+import { Menu, X, Sparkles, ChevronRight, Settings } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
 export default function Topbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-
-  const navLinks = [
-    { label: "BERANDA", href: "/#beranda" },
-    { label: "STRUKTUR", href: "/#struktur" },
-    { label: "PROKER", href: "/#proker" },
-    { label: "GALERI", href: "/#galeri" },
-    { label: "KOTAK ASPIRASI", href: "/aspirasi", isSpecial: true },
-  ];
+  const { data } = useContent();
+  const header = data.header;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80 transition-all duration-300">
@@ -29,8 +24,8 @@ export default function Topbar() {
           >
             <div className="w-11 h-11 rounded-xl flex items-center justify-center overflow-hidden bg-white border border-slate-200/80 shadow-xs group-hover:border-blue-400 transition-colors p-1">
               <Image
-                src="/logo-osis.jpg"
-                alt="Logo OSIS MAN 19 Jakarta"
+                src={header.logoUrl || "/logo-osis.jpg"}
+                alt={`Logo ${header.orgNamePrefix}`}
                 width={42}
                 height={42}
                 className="object-contain"
@@ -39,17 +34,18 @@ export default function Topbar() {
             </div>
             <div className="flex flex-col">
               <span className="font-extrabold text-base sm:text-lg text-slate-900 leading-tight group-hover:text-blue-700 transition-colors">
-                OSIS MAN 19 <span className="text-blue-700">JAKARTA</span>
+                {header.orgNamePrefix}{" "}
+                <span className="text-blue-700">{header.orgNameHighlight}</span>
               </span>
               <span className="text-[11px] font-semibold text-slate-500 tracking-wider uppercase">
-                Periode 2026/2027
+                {header.periode}
               </span>
             </div>
           </Link>
 
           {/* Menu Navigasi Desktop */}
           <nav className="hidden md:flex items-center space-x-1.5 lg:space-x-2">
-            {navLinks.map((link) => {
+            {header.navLinks.map((link) => {
               const isActive =
                 link.href === "/aspirasi"
                   ? pathname === "/aspirasi"
@@ -58,7 +54,7 @@ export default function Topbar() {
               if (link.isSpecial) {
                 return (
                   <Link
-                    key={link.label}
+                    key={link.id || link.label}
                     href={link.href}
                     className={`ml-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold tracking-wider transition-all duration-200 ${
                       pathname === "/aspirasi"
@@ -74,7 +70,7 @@ export default function Topbar() {
 
               return (
                 <Link
-                  key={link.label}
+                  key={link.id || link.label}
                   href={link.href}
                   className={`px-3.5 py-2 rounded-lg text-xs font-bold tracking-wider uppercase transition-all duration-200 ${
                     isActive
@@ -86,10 +82,26 @@ export default function Topbar() {
                 </Link>
               );
             })}
+
+            {/* Quick Admin Access Icon */}
+            <Link
+              href="/admin"
+              title="Panel Admin (#admin)"
+              className="p-2 rounded-lg text-slate-400 hover:text-blue-700 hover:bg-blue-50 transition-colors ml-1"
+            >
+              <Settings className="w-4 h-4" />
+            </Link>
           </nav>
 
           {/* Tombol Mobile Toggle */}
-          <div className="flex md:hidden items-center">
+          <div className="flex md:hidden items-center gap-1">
+            <Link
+              href="/admin"
+              className="p-2 rounded-lg text-slate-500 hover:text-blue-700"
+              title="Admin Panel"
+            >
+              <Settings className="w-5 h-5" />
+            </Link>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2.5 rounded-xl text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors focus:outline-none"
@@ -104,9 +116,9 @@ export default function Topbar() {
       {/* Mobile Menu Dropdown */}
       {isOpen && (
         <div className="md:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200 px-6 pt-3 pb-6 space-y-2 shadow-xl animate-in slide-in-from-top-2 duration-200">
-          {navLinks.map((link) => (
+          {header.navLinks.map((link) => (
             <Link
-              key={link.label}
+              key={link.id || link.label}
               href={link.href}
               onClick={() => setIsOpen(false)}
               className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
@@ -121,12 +133,24 @@ export default function Topbar() {
                 {link.isSpecial && <Sparkles className="w-4 h-4 text-blue-200" />}
                 {link.label}
               </span>
-              <ChevronRight className={`w-4 h-4 ${link.isSpecial ? "text-blue-200" : "text-slate-400"}`} />
+              <ChevronRight
+                className={`w-4 h-4 ${link.isSpecial ? "text-blue-200" : "text-slate-400"}`}
+              />
             </Link>
           ))}
+          <Link
+            href="/admin"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold bg-slate-100 text-slate-800 hover:bg-blue-50 hover:text-blue-700 transition-colors border border-slate-200"
+          >
+            <span className="flex items-center gap-2">
+              <Settings className="w-4 h-4 text-blue-600" />
+              Kelola Konten Website (Admin)
+            </span>
+            <ChevronRight className="w-4 h-4 text-slate-400" />
+          </Link>
         </div>
       )}
     </header>
   );
 }
-
