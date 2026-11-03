@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Users, Search, Award, Shield } from "lucide-react";
+import Image from "next/image";
+import { Users, Search, Award, Shield, Sparkles } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
+import MemberDetailModal, { ModalMemberData } from "@/components/MemberDetailModal";
 
 // Helper to generate initials from full name
 function getInitials(name: string) {
@@ -53,6 +55,7 @@ export default function StrukturPengurus() {
 
   const [activeTab, setActiveTab] = useState<string>("Semua");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedMember, setSelectedMember] = useState<ModalMemberData | null>(null);
 
   const categories = useMemo(() => {
     return [
@@ -99,6 +102,12 @@ export default function StrukturPengurus() {
 
   return (
     <section id="struktur" className="space-y-10 scroll-mt-24">
+      {/* Popup Modal Detail Anggota (3D Card Flip Animation) */}
+      <MemberDetailModal
+        member={selectedMember}
+        onClose={() => setSelectedMember(null)}
+      />
+
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
@@ -110,9 +119,15 @@ export default function StrukturPengurus() {
             {struktur.sectionTitle}
           </h2>
         </div>
-        <p className="text-sm text-slate-500 max-w-md">
-          {struktur.sectionDesc || `Sebanyak ${totalPengurus} pengurus terpilih yang mengemban amanah di bawah bimbingan pembina.`}
-        </p>
+        <div className="flex flex-col items-start sm:items-end gap-1">
+          <p className="text-sm text-slate-500 max-w-md">
+            {struktur.sectionDesc || `Sebanyak ${totalPengurus} pengurus terpilih yang mengemban amanah di bawah bimbingan pembina.`}
+          </p>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Klik pada kartu pengurus untuk membuka kartu profil</span>
+          </span>
+        </div>
       </div>
 
       {/* Control Bar: Filter Tabs & Search */}
@@ -175,14 +190,38 @@ export default function StrukturPengurus() {
                 return (
                   <div
                     key={member.id || member.nama}
-                    className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all duration-200 flex flex-col items-center text-center justify-between group"
+                    onClick={() =>
+                      setSelectedMember({
+                        nama: member.nama,
+                        jabatan: member.jabatan,
+                        kelas: member.kelas,
+                        bidang: "Pengurus Inti",
+                        fotoUrl: member.fotoUrl,
+                        motto: member.motto,
+                        instagram: member.instagram,
+                        bio: member.bio,
+                      })
+                    }
+                    className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-blue-400 hover:-translate-y-1 transition-all duration-200 flex flex-col items-center text-center justify-between group cursor-pointer relative"
+                    title="Klik untuk detail kartu profil"
                   >
-                    <div className="flex flex-col items-center">
-                      {/* Monogram Avatar */}
+                    <div className="flex flex-col items-center w-full">
+                      {/* Avatar / Foto */}
                       <div
-                        className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${styling.avatarBg} flex items-center justify-center font-extrabold text-base tracking-wider shadow-sm mb-3.5 ring-4 ${styling.ring} group-hover:scale-105 transition-transform`}
+                        className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${styling.avatarBg} flex items-center justify-center font-extrabold text-base tracking-wider shadow-sm mb-3.5 ring-4 ${styling.ring} group-hover:scale-105 transition-transform overflow-hidden relative`}
                       >
-                        {getInitials(member.nama)}
+                        {member.fotoUrl ? (
+                          <Image
+                            src={member.fotoUrl}
+                            alt={member.nama}
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover"
+                            unoptimized={member.fotoUrl.startsWith("http")}
+                          />
+                        ) : (
+                          getInitials(member.nama)
+                        )}
                       </div>
 
                       <h4 className="font-bold text-sm text-slate-900 leading-snug group-hover:text-blue-700 transition-colors">
@@ -193,11 +232,14 @@ export default function StrukturPengurus() {
                       </span>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-slate-100 w-full flex justify-center">
+                    <div className="mt-4 pt-3 border-t border-slate-100 w-full flex flex-col items-center gap-1.5">
                       <span
                         className={`text-[11px] font-bold px-3 py-1 rounded-full border ${styling.bg}`}
                       >
                         {member.jabatan}
+                      </span>
+                      <span className="text-[10px] text-blue-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                        Buka Kartu Detail &rarr;
                       </span>
                     </div>
                   </div>
@@ -233,13 +275,37 @@ export default function StrukturPengurus() {
                 return (
                   <div
                     key={anggota.id || anggota.nama}
-                    className="p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all duration-200 flex flex-col items-center text-center justify-between group"
+                    onClick={() =>
+                      setSelectedMember({
+                        nama: anggota.nama,
+                        jabatan: anggota.jabatan,
+                        kelas: anggota.kelas,
+                        bidang: `Seksi Bidang ${sekbid.namaSekbid}`,
+                        fotoUrl: anggota.fotoUrl,
+                        motto: anggota.motto,
+                        instagram: anggota.instagram,
+                        bio: anggota.bio,
+                      })
+                    }
+                    className="p-4 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xl hover:border-blue-400 hover:-translate-y-1 transition-all duration-200 flex flex-col items-center text-center justify-between group cursor-pointer relative"
+                    title="Klik untuk detail kartu profil"
                   >
                     <div className="flex flex-col items-center w-full">
                       <div
-                        className={`w-13 h-13 rounded-xl bg-gradient-to-br ${styling.avatarBg} flex items-center justify-center font-bold text-xs tracking-wider shadow-2xs mb-2.5 ring-2 ${styling.ring} group-hover:scale-105 transition-transform`}
+                        className={`w-13 h-13 rounded-xl bg-gradient-to-br ${styling.avatarBg} flex items-center justify-center font-bold text-xs tracking-wider shadow-2xs mb-2.5 ring-2 ${styling.ring} group-hover:scale-105 transition-transform overflow-hidden relative`}
                       >
-                        {getInitials(anggota.nama)}
+                        {anggota.fotoUrl ? (
+                          <Image
+                            src={anggota.fotoUrl}
+                            alt={anggota.nama}
+                            width={52}
+                            height={52}
+                            className="w-full h-full object-cover"
+                            unoptimized={anggota.fotoUrl.startsWith("http")}
+                          />
+                        ) : (
+                          getInitials(anggota.nama)
+                        )}
                       </div>
                       <h4 className="font-bold text-xs text-slate-900 leading-snug line-clamp-2 group-hover:text-blue-700 transition-colors">
                         {anggota.nama}
@@ -249,11 +315,14 @@ export default function StrukturPengurus() {
                       </span>
                     </div>
 
-                    <div className="mt-3 pt-2 border-t border-slate-100 w-full flex justify-center">
+                    <div className="mt-3 pt-2 border-t border-slate-100 w-full flex flex-col items-center gap-1">
                       <span
                         className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${styling.bg}`}
                       >
                         {anggota.jabatan}
+                      </span>
+                      <span className="text-[9px] text-blue-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                        Detail Kartu &rarr;
                       </span>
                     </div>
                   </div>

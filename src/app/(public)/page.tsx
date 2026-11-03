@@ -21,11 +21,11 @@ export default function LandingPage() {
   const { hero, visiMisi, homeAspirasiBanner, homeCtaCollab } = data;
 
   return (
-    <div className="space-y-20 pb-20">
+    <div className="space-y-20 pb-20 overflow-x-hidden w-full">
       {/* 1. Hero Section (ID: beranda) */}
       <section
         id="beranda"
-        className="pt-24 sm:pt-28 pb-12 border-b border-slate-200/90 relative"
+        className="pt-24 sm:pt-28 pb-12 border-b border-slate-200/90 relative overflow-hidden"
       >
         {/* Subtle Decorative Ambient Glows */}
         <div className="absolute top-12 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none -z-10" />

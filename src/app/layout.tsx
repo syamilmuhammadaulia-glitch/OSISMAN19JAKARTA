@@ -1,3 +1,4 @@
+import type { Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ContentProvider } from "@/context/ContentContext";
@@ -9,6 +10,13 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata = {
   title: "OSIS MAN 19 Jakarta - Wadah Kepemimpinan, Kreasi & Kolaborasi",
@@ -30,7 +38,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" className={`scroll-smooth ${plusJakartaSans.variable}`}>
-      <body className="font-sans antialiased text-slate-800 bg-slate-50 min-h-screen">
+      <body className="font-sans antialiased text-slate-800 bg-slate-50 min-h-screen overflow-x-hidden w-full">
         <ContentProvider>
           <AdminHashListener />
           {children}

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Sparkles, ChevronRight, Settings } from "lucide-react";
+import { Menu, X, Sparkles, ChevronRight } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 
 export default function Topbar() {
@@ -82,26 +82,10 @@ export default function Topbar() {
                 </Link>
               );
             })}
-
-            {/* Quick Admin Access Icon */}
-            <Link
-              href="/admin"
-              title="Panel Admin (#admin)"
-              className="p-2 rounded-lg text-slate-400 hover:text-blue-700 hover:bg-blue-50 transition-colors ml-1"
-            >
-              <Settings className="w-4 h-4" />
-            </Link>
           </nav>
 
           {/* Tombol Mobile Toggle */}
-          <div className="flex md:hidden items-center gap-1">
-            <Link
-              href="/admin"
-              className="p-2 rounded-lg text-slate-500 hover:text-blue-700"
-              title="Admin Panel"
-            >
-              <Settings className="w-5 h-5" />
-            </Link>
+          <div className="flex md:hidden items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2.5 rounded-xl text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors focus:outline-none"
@@ -138,17 +122,6 @@ export default function Topbar() {
               />
             </Link>
           ))}
-          <Link
-            href="/admin"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold bg-slate-100 text-slate-800 hover:bg-blue-50 hover:text-blue-700 transition-colors border border-slate-200"
-          >
-            <span className="flex items-center gap-2">
-              <Settings className="w-4 h-4 text-blue-600" />
-              Kelola Konten Website (Admin)
-            </span>
-            <ChevronRight className="w-4 h-4 text-slate-400" />
-          </Link>
         </div>
       )}
     </header>

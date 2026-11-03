@@ -76,6 +76,10 @@ export interface PengurusIntiItem {
   kelas: string;
   bidang: string;
   urutan?: number;
+  fotoUrl?: string;
+  motto?: string;
+  instagram?: string;
+  bio?: string;
 }
 
 export interface AnggotaSekbid {
@@ -83,6 +87,10 @@ export interface AnggotaSekbid {
   nama: string;
   jabatan: string; // "Koordinator" | "Anggota" | custom
   kelas: string;
+  fotoUrl?: string;
+  motto?: string;
+  instagram?: string;
+  bio?: string;
 }
 
 export interface SekbidItem {

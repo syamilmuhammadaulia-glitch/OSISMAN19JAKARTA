@@ -9,7 +9,6 @@ import {
   Sparkles,
   MessageCircle,
   Phone,
-  Shield,
 } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 
@@ -141,14 +140,6 @@ export default function Footer() {
               >
                 <MessageCircle className="w-3.5 h-3.5 text-blue-400" />
                 <span>Saluran Aspirasi</span>
-              </Link>
-              <Link
-                href="/admin"
-                className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 flex items-center gap-1.5 text-xs text-slate-400 hover:text-blue-300 hover:bg-slate-800 transition-all"
-                title="Panel Pengaturan Admin"
-              >
-                <Shield className="w-3.5 h-3.5 text-slate-400" />
-                <span>Admin</span>
               </Link>
             </div>
           </div>
